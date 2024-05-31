@@ -32,7 +32,7 @@ jobs:
               prerelease: false
               release_name: ${{ steps.short-sha.outputs.sha }}
               tag_name: ${{ steps.short-sha.outputs.sha }}
-              body_path: Build for commit ${{ steps.short-sha.outputs.sha }}
+              body: Build for commit ${{ steps.short-sha.outputs.sha }}
           env:
               GITHUB_TOKEN: ${{ github.token }}
         - name: upload windows artifact
