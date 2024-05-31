@@ -1,0 +1,7 @@
+*.mkv
+*.avi
+*.exe
+build/*
+dist/*
+*.bat
+*.spec

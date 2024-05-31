@@ -1,0 +1,18 @@
+name: Build Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+    pyinstaller-build:
+      runs-on: windows-latest
+      steps:
+        - name: Create Executable
+          uses: sayyid5416/pyinstaller@v1
+          with:
+            python_ver: '3.11'
+            spec: 'mkv_to_xvid.py'
+            requirements: 'requirements.txt'
+            upload_exe_with_name: 'mkv_to_xvid.exe'
+            options: --onefile, --name "MKV to XViD"
