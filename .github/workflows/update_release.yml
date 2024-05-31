@@ -30,8 +30,8 @@ jobs:
           with:
               draft: false
               prerelease: false
-              release_name: ${{ github.ref }}-${{ steps.short-sha.outputs.sha }}
-              tag_name: ${{ github.ref }}-${{ steps.short-sha.outputs.sha }}
+              release_name: ${{ steps.short-sha.outputs.sha }}
+              tag_name: ${{ steps.short-sha.outputs.sha }}
               body_path: CHANGELOG.md
           env:
               GITHUB_TOKEN: ${{ github.token }}
