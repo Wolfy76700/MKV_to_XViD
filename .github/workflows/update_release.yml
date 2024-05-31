@@ -8,7 +8,13 @@ jobs:
     pyinstaller-build:
       runs-on: windows-latest
       steps:
+        - uses: actions/checkout@v4
+        - uses: benjlevesque/short-sha@v3.0
+          id: short-sha
+          with:
+            length: 6
         - name: Create Executable
+          id: create_exe
           uses: sayyid5416/pyinstaller@v1
           with:
             python_ver: '3.11'
@@ -16,3 +22,23 @@ jobs:
             requirements: 'requirements.txt'
             upload_exe_with_name: 'mkv_to_xvid.exe'
             options: --onefile, --name "MKV to XViD"
+        - name: release
+          uses: actions/create-release@v1
+          id: create_release
+          with:
+              draft: false
+              prerelease: false
+              release_name: ${{ github.ref }}-${{ steps.short-sha.outputs.sha }}
+              tag_name: ${{ github.ref }}-${{ steps.short-sha.outputs.sha }}
+              body_path: CHANGELOG.md
+          env:
+              GITHUB_TOKEN: ${{ github.token }}
+        - name: upload windows artifact
+          uses: actions/upload-release-asset@v1
+          env:
+                GITHUB_TOKEN: ${{ github.token }}
+          with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ${{ steps.create_exe.executable_path }}
+                asset_name: mkv_to_xvid.exe
+                asset_content_type: application/vnd.microsoft.portable-executable
