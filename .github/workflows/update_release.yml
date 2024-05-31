@@ -41,6 +41,6 @@ jobs:
                 GITHUB_TOKEN: ${{ github.token }}
           with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ${{ steps.create_exe.executable_path }}
+                asset_path: ${{ steps.create_exe.outputs.executable_path }}
                 asset_name: mkv_to_xvid.exe
                 asset_content_type: application/vnd.microsoft.portable-executable
