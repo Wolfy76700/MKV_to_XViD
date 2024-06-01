@@ -35,7 +35,6 @@ jobs:
               body: Build for commit ${{ steps.short-sha.outputs.sha }}
           env:
               GITHUB_TOKEN: ${{ github.token }}
-        - run: DIR ${{ steps.create_exe.outputs.executable_path }}
         - name: upload windows artifact
           uses: actions/upload-release-asset@v1
           env:
@@ -43,5 +42,5 @@ jobs:
           with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
                 asset_path: ${{ steps.create_exe.outputs.executable_path }}/mkv_to_xvid.exe
-                asset_name: Windows release
+                asset_name: mkv_to_xvid.exe
                 asset_content_type: application/vnd.microsoft.portable-executable
