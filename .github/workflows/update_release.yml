@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-    pyinstaller-build:
-      runs-on: windows-latest
+    create-release:
+      runs-on: ubuntu-latest
       permissions:
             contents: write
       steps:
@@ -15,15 +15,6 @@ jobs:
           id: short-sha
           with:
             length: 6
-        - name: Create Executable
-          id: create_exe
-          uses: sayyid5416/pyinstaller@v1
-          with:
-            python_ver: '3.11'
-            spec: 'mkv_to_xvid.py'
-            requirements: 'requirements.txt'
-            upload_exe_with_name: 'mkv_to_xvid'
-            options: --onefile, --name "mkv_to_xvid"
         - name: release
           uses: actions/create-release@v1
           id: create_release
@@ -35,12 +26,30 @@ jobs:
               body: Build for commit ${{ steps.short-sha.outputs.sha }}
           env:
               GITHUB_TOKEN: ${{ github.token }}
+      outputs:
+          release_upload_url: ${{ steps.create_release.outputs.upload_url }}
+    pyinstaller-build-windows:
+      needs: create-release
+      runs-on: windows-latest
+      permissions:
+            contents: write
+      steps:
+        - uses: actions/checkout@v4
+        - name: Create Executable
+          id: create_exe
+          uses: sayyid5416/pyinstaller@v1
+          with:
+            python_ver: '3.11'
+            spec: 'mkv_to_xvid.py'
+            requirements: 'requirements.txt'
+            upload_exe_with_name: 'mkv_to_xvid'
+            options: --onefile, --name "mkv_to_xvid"
         - name: upload windows artifact
           uses: actions/upload-release-asset@v1
           env:
                 GITHUB_TOKEN: ${{ github.token }}
           with:
-                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                upload_url: ${{ needs.create-release.outputs.release_upload_url }}
                 asset_path: ${{ steps.create_exe.outputs.executable_path }}/mkv_to_xvid.exe
                 asset_name: mkv_to_xvid.exe
                 asset_content_type: application/vnd.microsoft.portable-executable
